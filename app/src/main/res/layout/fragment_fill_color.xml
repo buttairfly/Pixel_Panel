@@ -1,0 +1,124 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lawi13.ilmcraft.pixelpanel.FillColor"
+    android:id="@+id/FillColor">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <TextView
+            android:text="@string/textRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewRed"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:padding="20dp" />
+
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewRedProgress"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="20dp" />
+
+        <SeekBar
+            android:id="@+id/seekBarRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewRed"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:max="255"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:progress="0"
+            android:indeterminate="false" />
+
+        <TextView
+            android:text="@string/textGreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewGreen"
+            android:layout_below="@+id/seekBarRed"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:padding="20dp" />
+
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewGreenProgress"
+            android:layout_below="@+id/seekBarRed"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="20dp" />
+
+        <SeekBar
+            android:id="@+id/seekBarGreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewGreen"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:max="255"
+            android:progress="0"
+            android:indeterminate="false"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp" />
+
+        <TextView
+            android:text="@string/textBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewBlue"
+            android:layout_below="@+id/seekBarGreen"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:padding="20dp" />
+
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewBlueProgress"
+            android:layout_below="@+id/seekBarGreen"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="20dp" />
+
+        <SeekBar
+            android:id="@+id/seekBarBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewBlue"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:max="255"
+            android:progress="0"
+            android:indeterminate="false"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp" />
+    </RelativeLayout>
+</FrameLayout>
