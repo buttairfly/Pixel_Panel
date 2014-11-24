@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Pixel Panel</string>
-    <string name="prefEditTextIP"></string>
+    <string name="prefEditTextIP"> </string>
     <string name="ipAddressHint">enter valid IP Address</string>
     <string name="btnReset">Reset</string>
     <string name="btnShutdown">Shutdown Panel</string>
@@ -13,7 +13,7 @@
     <string name="textFPS">Frames per Second</string>
     <string name="textIP">IP Address</string>
     <string name="textIpSum">The IP Address of Pixel Panel</string>
-    <!--groups items name MUST be another string-array name -->
+    <!--groups items names MUST be another string-array name -->
     <string-array name="groups">
         <item>Draw</item>
         <item>Animation</item>
@@ -25,7 +25,7 @@
         <item>Canvas</item>
     </string-array>
     <string-array name="Animation">
-        <item>Fade</item>
+        <item>Pulse Color</item>
         <item>Fade Dir</item>
         <item>Fade Pixels</item>
         <item>Matrix</item>
@@ -41,22 +41,13 @@
         <item>Display</item>
     </string-array>
 
-    <string name="title_section1">Draw</string>
-    <string name="title_section11">FillColor</string>
-    <string name="title_section2">Animation</string>
-    <string name="title_section21">Fade Dir</string>
-    <string name="title_section22">Rotor</string>
-    <string name="title_section23">Drops</string>
-    <string name="title_section24">Boot Screen</string>
-    <string name="title_section25">Pulse Screen</string>
-    <string name="title_section3">Games</string>
-    <string name="title_section4">Display Settings</string>
-    <string name="title_section5">Main Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Update</string>
     <string name="action_settings">Settings</string>
     <string name="mainSettings">Pixel Panel</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="color1">first Color</string>
+    <string name="color2">second Color</string>
 
 </resources>

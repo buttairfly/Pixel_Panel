@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -65,7 +64,6 @@ public class NavigationDrawerFragment extends Fragment {
 
     private View mFragmentContainerView;
     private ExpandableListView lv;
-    private ExpandableListAdapter mAdapter;
 
     private int mCurrentSelectedGroup = 0;
     private int mCurrentSelectedChild = 0;
@@ -112,8 +110,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         lv = (ExpandableListView) mFragmentContainerView.findViewById(R.id.ExpandListView);
-        mAdapter = new ExpandabelListAdoptor(getActivity(), listDataHeader, listDataChild);
-        lv.setAdapter(mAdapter);
+        lv.setAdapter(new ExpandabelListAdoptor(getActivity(), listDataHeader, listDataChild));
         lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i2, long l) {

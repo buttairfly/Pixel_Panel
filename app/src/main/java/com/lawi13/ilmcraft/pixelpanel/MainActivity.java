@@ -16,19 +16,22 @@ import android.widget.Toast;
 
 
 public class MainActivity extends Activity
-        implements  NavigationDrawerFragment.NavigationDrawerCallbacks,
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         Connectivity.OnFragmentInteractionListener,
         Display.OnFragmentInteractionListener,
-                    FillColor.OnFragmentInteractionListener{
+        OneColorFragment.OnFragmentInteractionListener {
 
     public static String PACKAGE_NAME;
 
     public static final String KEY_PREF_IP_ADDRESS = "IP_Address";
-    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String KEY_PREF_pColor1 = "pColor1";
 
-    private int pRed = 255;
-    private int pGreen = 0;
-    private int pBlue = 0;
+    public static final String MyPREFERENCES = "MyPrefs";
+
+    private int actGroup = 0;
+    private int actChild = 0;
+
+    private int pColor1 = 0;
     private int pMBrightness = 255;
     private int pFPS = 60;
     private String ipAddress = "";
@@ -65,14 +68,19 @@ public class MainActivity extends Activity
 
         //shared prefs
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        if (sharedpreferences.contains(KEY_PREF_IP_ADDRESS))
-        {
+        if (sharedpreferences.contains(KEY_PREF_IP_ADDRESS)) {
             ipAddress = sharedpreferences.getString(KEY_PREF_IP_ADDRESS, "");
         }
+        if (sharedpreferences.contains(KEY_PREF_pColor1)) {
+            pColor1 = sharedpreferences.getInt(KEY_PREF_pColor1, 0);
+        }
+        onNavigationDrawerItemSelected(0, 0);
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int group, int child) {
+        actGroup = group;
+        actChild = child;
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         onSectionAttached(group, child);
@@ -83,25 +91,96 @@ public class MainActivity extends Activity
                     case 0:
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame,
-                                        FillColor.newInstance(pRed, pGreen, pBlue))
+                                        OneColorFragment.newInstance(pColor1))
                                 .commit();
                         break;
                     default:
-                        loadDefaultFragment(mTitle);
+                        loadDefaultFragment("Dummy: " + mTitle);
                         break;
                 }
                 break;
             case 1:
                 switch (child) {
+                    case 0: {
+                        /* Pulse Color
+                         */
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        OneColorFragment.newInstance(pColor1))
+                                .commit();
+                        break;
+                    }
+                    case 1: {
+                        /* Fade Dir
+                         * paramSize: 5
+                         * [0]: diff
+                         * [1]: direction //TODO: implement
+                         * [2]: red
+                         * [3]: green
+                         * [4]: blue
+                         */
+                        byte diff = 4;
+                        byte dir = 0;
+                        byte[] message = {diff, dir, (byte) 0x00, (byte) 0xff, 0x00};
+                        byte ctl = (byte) 0x80;
+                        byte spCmd = (byte) 0x03;
+                        byte spSubCmd = (byte) 0x02;
+                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                        loadDefaultFragment(mTitle + " - Left - Started");
+                        break;
+                    }
+                    case 4: {
+                        /* Rotor
+                         * paramSize: 7
+                         * [0]: p_x1
+                         * [1]: p_y1
+                         * [2]: p_x2
+                         * [3]:	p_y2
+                         * [4]: red
+                         * [5]:	green
+                         * [6]:	blue
+                         */
+                        byte[] message = {(byte) 0x00, 0x00, 0x00, 0x00,
+                                (byte) Utils.ARGBtoR(pColor1),
+                                (byte) Utils.ARGBtoG(pColor1),
+                                (byte) Utils.ARGBtoB(pColor1)};
+                        byte ctl = (byte) 0x80;
+                        byte spCmd = (byte) 0x03;
+                        byte spSubCmd = (byte) 0x05;
+                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                        loadDefaultFragment(mTitle + " - Started");
+                        break;
+                    }
+                    case 5: {
+                        /* Drops
+                         * paramSize: 6
+                         * [0]: x
+                         * [1]: y
+                         * [2]: radius
+                         * [3]: red
+                         * [4]: green
+                         * [5]: blue
+                         */
+                        byte[] message = {(byte) 0x04, 0x02, 0x00,
+                                (byte) Utils.ARGBtoR(pColor1),
+                                (byte) Utils.ARGBtoG(pColor1),
+                                (byte) Utils.ARGBtoB(pColor1)};
+                        byte ctl = (byte) 0x80;
+                        byte spCmd = (byte) 0x03;
+                        byte spSubCmd = (byte) 0x06;
+                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                        loadDefaultFragment(mTitle + " - Started");
+                        break;
+                    }
                     default:
-                        loadDefaultFragment(mTitle);
+                        loadDefaultFragment("Dummy: " + mTitle);
                         break;
                 }
                 break;
             case 2:
                 switch (child) {
                     default:
-                        loadDefaultFragment(mTitle);
+                        loadDefaultFragment("Dummy: " + mTitle);
                         break;
                 }
                 break;
@@ -120,12 +199,12 @@ public class MainActivity extends Activity
                                 .commit();
                         break;
                     default:
-                        loadDefaultFragment(mTitle);
+                        loadDefaultFragment("Dummy: " + mTitle);
                         break;
                 }
                 break;
             default:
-                loadDefaultFragment(mTitle);
+                loadDefaultFragment("Dummy: " + mTitle);
                 break;
         }
     }
@@ -184,55 +263,62 @@ public class MainActivity extends Activity
     protected void onResume() {
         super.onResume();
 
-		if (!Utils.isConnected(this)) {
-			Log.v(TAG, "no wifi");
+        if (!Utils.isConnected(this)) {
+            Log.v(TAG, "no wifi");
             Toast toast = Toast.makeText(this, "Please activate yout Wi-Fi!", Toast.LENGTH_LONG);
             toast.show();
-		}
-        else {
+        } else {
             if (!Utils.isValidIp(ipAddress)) {
                 Log.v(TAG, "no valid ip address");
 
                 Toast toast = Toast.makeText(this, "no valid ip address found", Toast.LENGTH_LONG);
                 toast.show();
-            }
-            else {
+            } else {
                 Log.v(TAG, "start Thread");
                 udp = new UDP_Client(this);
                 udp.execute(ipAddress);
             }
-		}
+        }
     }
 
     protected void onPause() {
         super.onPause();
-        if(udp != null)
+        if (udp != null)
             udp.terminate();
     }
 
     private void showColor() {
-
-        byte ctl = (byte)0x80;
+        byte ctl = (byte) 0x80;
         byte spCmd;
         byte spSubCmd;
-        /*if(pulseCheckBox.isChecked()){
-            //animation
-            byte[] message = {(byte)0xff,0x00,pRed,pGreen,pBlue};
-            spCmd 		= (byte)0x03;//SPCMD_ANI_SET
-            spSubCmd 	= (byte)0x04;//aniScreenPulse
-            if(udp != null){
-                udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+        switch (actGroup) {
+            case 0: {
+                //draw Color
+                byte[] message = {
+                        (byte) Utils.ARGBtoR(pColor1),
+                        (byte) Utils.ARGBtoG(pColor1),
+                        (byte) Utils.ARGBtoB(pColor1)};
+                spCmd = (byte) 0x01;//SPCMD_DRAW
+                spSubCmd = (byte) 0x01;//SPCMD__COLOR
+                if (udp != null) {
+                    udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                }
+                break;
+            }
+            case 1: {
+                //animation
+                byte[] message = {(byte) 0xff, 0x00,
+                        (byte) Utils.ARGBtoR(pColor1),
+                        (byte) Utils.ARGBtoG(pColor1),
+                        (byte) Utils.ARGBtoB(pColor1)};
+                spCmd = (byte) 0x03;//SPCMD_ANI_SET
+                spSubCmd = (byte) 0x04;//aniScreenPulse
+                if (udp != null) {
+                    udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                }
+                break;
             }
         }
-        else{*/
-            //draw Color
-            byte[] message = {(byte)pRed,(byte)pGreen,(byte)pBlue};
-            spCmd 		= (byte)0x01;//SPCMD_DRAW
-            spSubCmd 	= (byte)0x01;//SPCMD__COLOR
-            if(udp != null){
-                udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
-            }
-       // }
     }
 
 
@@ -258,7 +344,7 @@ public class MainActivity extends Activity
     public void onIpAddressChange(String ip) {
         ipAddress = ip;
         //terminate udp
-        if(udp != null){
+        if (udp != null) {
             udp.terminate();
         }
         //check connectivity
@@ -266,8 +352,7 @@ public class MainActivity extends Activity
             Log.v(TAG, "no wifi");
             Toast toast = Toast.makeText(this, "Please activate your Wi-Fi!", Toast.LENGTH_LONG);
             toast.show();
-        }
-        else {
+        } else {
             if (!Utils.isValidIp(ipAddress)) {
                 Log.v(TAG, "no valid ip address");
                 ipAddress = "";
@@ -282,29 +367,21 @@ public class MainActivity extends Activity
         //update ipAddress
         Editor editor = sharedpreferences.edit();
         editor.putString(KEY_PREF_IP_ADDRESS, ipAddress);
-        editor.commit();
+        editor.apply();
     }
 
 
     /*
-     * FillColor Listener
+     * OneColorFragment Listener
      *
      */
     @Override
-    public void onRedChange(int red) {
-        pRed = red;
+    public void onColor1Change(int color1) {
+        pColor1 = color1;
         showColor();
-    }
-
-    @Override
-    public void onGreenChange(int green) {
-        pGreen = green;
-        showColor();
-    }
-
-    @Override
-    public void onBlueChange(int blue) {
-        pBlue = blue;
-        showColor();
+        //update color1
+        Editor editor = sharedpreferences.edit();
+        editor.putInt(KEY_PREF_pColor1, pColor1);
+        editor.apply();
     }
 }

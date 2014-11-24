@@ -1,0 +1,39 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lawi13.ilmcraft.pixelpanel.TwoColorFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:text="@string/color1"
+            android:id="@+id/textViewColor1"
+            android:layout_gravity="center_horizontal"
+            android:padding="20dp"
+            android:gravity="center"
+            android:layout_weight="0.50"
+            android:textSize="30sp"
+            android:singleLine="false" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:text="@string/color2"
+            android:id="@+id/textViewColor2"
+            android:layout_gravity="center_horizontal"
+            android:padding="20dp"
+            android:gravity="center"
+            android:layout_weight="0.50"
+            android:textSize="30sp" />
+    </LinearLayout>
+</FrameLayout>
