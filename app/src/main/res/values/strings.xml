@@ -5,7 +5,7 @@
     <string name="prefEditTextIP"></string>
     <string name="ipAddressHint">enter valid IP Address</string>
     <string name="btnReset">Reset</string>
-    <string name="btnShutdown">Shutdown</string>
+    <string name="btnShutdown">Shutdown Panel</string>
     <string name="textRed">Red</string>
     <string name="textGreen">Green</string>
     <string name="textBlue">Blue</string>
@@ -13,6 +13,34 @@
     <string name="textFPS">Frames per Second</string>
     <string name="textIP">IP Address</string>
     <string name="textIpSum">The IP Address of Pixel Panel</string>
+    <!--groups items name MUST be another string-array name -->
+    <string-array name="groups">
+        <item>Draw</item>
+        <item>Animation</item>
+        <item>Games</item>
+        <item>Settings</item>
+    </string-array>
+    <string-array name="Draw">
+        <item>Fill Color</item>
+        <item>Canvas</item>
+    </string-array>
+    <string-array name="Animation">
+        <item>Fade</item>
+        <item>Fade Dir</item>
+        <item>Fade Pixels</item>
+        <item>Matrix</item>
+        <item>Rotor</item>
+        <item>Drops</item>
+        <item>Invader</item>
+    </string-array>
+    <string-array name="Games">
+        <item>Snake</item>
+    </string-array>
+    <string-array name="Settings">
+        <item>Connectivity</item>
+        <item>Display</item>
+    </string-array>
+
     <string name="title_section1">Draw</string>
     <string name="title_section11">FillColor</string>
     <string name="title_section2">Animation</string>
@@ -29,5 +57,6 @@
     <string name="action_example">Update</string>
     <string name="action_settings">Settings</string>
     <string name="mainSettings">Pixel Panel</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

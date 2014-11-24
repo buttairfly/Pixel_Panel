@@ -1,25 +1,27 @@
 package com.lawi13.ilmcraft.pixelpanel;
 
-import android.app.Activity;
-
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentManager;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
-import android.content.pm.ActivityInfo;
-import android.widget.Toast;
-import android.util.Log;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity
         implements  NavigationDrawerFragment.NavigationDrawerCallbacks,
-                    Settings.OnFragmentInteractionListener,
+        Connectivity.OnFragmentInteractionListener,
+        Display.OnFragmentInteractionListener,
                     FillColor.OnFragmentInteractionListener{
+
+    public static String PACKAGE_NAME;
 
     public static final String KEY_PREF_IP_ADDRESS = "IP_Address";
     public static final String MyPREFERENCES = "MyPrefs" ;
@@ -29,10 +31,7 @@ public class MainActivity extends Activity
     private int pBlue = 0;
     private int pMBrightness = 255;
     private int pFPS = 60;
-    private String ipAddress = "";//"192.168.1.185";
-
-
-
+    private String ipAddress = "";
     private UDP_Client udp;
     final static String TAG = "MainActivity";
 
@@ -42,6 +41,7 @@ public class MainActivity extends Activity
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     SharedPreferences sharedpreferences;
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -50,6 +50,7 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PACKAGE_NAME = getApplicationContext().getPackageName();
         setContentView(R.layout.activity_main);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -71,59 +72,79 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(int group, int child) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        onSectionAttached(position + 1);
-        Log.v(TAG,"change to Position "+ position + ": "+ mTitle);
-        switch(position){
-            case 1:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame,
-                                FillColor.newInstance(pRed, pGreen, pBlue))
-                        .commit();
+        onSectionAttached(group, child);
+        Log.v(TAG, "change to Group: " + group + ", Child: " + child + ", Title: " + mTitle);
+        switch (group) {
+            case 0:
+                switch (child) {
+                    case 0:
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        FillColor.newInstance(pRed, pGreen, pBlue))
+                                .commit();
+                        break;
+                    default:
+                        loadDefaultFragment(mTitle);
+                        break;
+                }
                 break;
-            case 8:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame,
-                                Settings.newInstance(pMBrightness, pFPS, ipAddress))
-                        .commit();
+            case 1:
+                switch (child) {
+                    default:
+                        loadDefaultFragment(mTitle);
+                        break;
+                }
+                break;
+            case 2:
+                switch (child) {
+                    default:
+                        loadDefaultFragment(mTitle);
+                        break;
+                }
+                break;
+            case 3:
+                switch (child) {
+                    case 0:
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        Connectivity.newInstance(ipAddress))
+                                .commit();
+                        break;
+                    case 1:
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        Display.newInstance(pMBrightness, pFPS))
+                                .commit();
+                        break;
+                    default:
+                        loadDefaultFragment(mTitle);
+                        break;
+                }
+                break;
+            default:
+                loadDefaultFragment(mTitle);
                 break;
         }
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section11);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section21);
-                break;
-            case 5:
-                mTitle = getString(R.string.title_section22);
-                break;
-            case 6:
-                mTitle = getString(R.string.title_section23);
-                break;
-            case 7:
-                mTitle = getString(R.string.title_section24);
-                break;
-            case 8:
-                mTitle = getString(R.string.title_section3);
-                break;
-            case 9:
-                mTitle = getString(R.string.title_section4);
-                break;
-            default:
-                mTitle = getString(R.string.title_section5);
-                break;
+    private void loadDefaultFragment(CharSequence s) {
+        getFragmentManager().beginTransaction().replace(R.id.content_frame,
+                DefaultFragment.newInstance(s))
+                .commit();
+    }
+
+    public void onSectionAttached(int group, int child) {
+        try {
+            String[] groupArray = getResources().getStringArray(R.array.groups);
+            int[] ids = {R.array.Draw, R.array.Animation, R.array.Games, R.array.Settings};
+            String[] childArray = getResources().getStringArray(ids[group]);
+            mTitle = groupArray[group] + " - " + childArray[child];
+        } catch (Exception e) {
+            throw new RuntimeException("onSectionAttached error with group: " + group +
+                    ", child: " + child, e);
         }
     }
 
@@ -157,10 +178,7 @@ public class MainActivity extends Activity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     protected void onResume() {
@@ -172,7 +190,6 @@ public class MainActivity extends Activity
             toast.show();
 		}
         else {
-            SharedPreferences sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             if (!Utils.isValidIp(ipAddress)) {
                 Log.v(TAG, "no valid ip address");
 
@@ -181,7 +198,7 @@ public class MainActivity extends Activity
             }
             else {
                 Log.v(TAG, "start Thread");
-                udp = (UDP_Client) new UDP_Client(this);
+                udp = new UDP_Client(this);
                 udp.execute(ipAddress);
             }
 		}
@@ -220,7 +237,7 @@ public class MainActivity extends Activity
 
 
     /*
-     * Settings Listener
+     * Display Listener
      *
      */
     @Override
@@ -233,6 +250,10 @@ public class MainActivity extends Activity
         pFPS = fps;
     }
 
+    /*
+     * Connectivity Listener
+     *
+     */
     @Override
     public void onIpAddressChange(String ip) {
         ipAddress = ip;
@@ -254,7 +275,7 @@ public class MainActivity extends Activity
                 toast.show();
             } else {
                 Log.v(TAG, "start Thread");
-                udp = (UDP_Client) new UDP_Client(this);
+                udp = new UDP_Client(this);
                 udp.execute(ipAddress);
             }
         }
