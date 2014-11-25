@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -25,6 +26,12 @@ public class TwoColorFragment extends Fragment {
     private int pId;
     private int pColor1;
     private int pColor2;
+
+    private ColorPicker picker;
+    private SVBar svBar;
+    private OpacityBar opacityBar;
+    private LinearLayout rl;
+
 
     private TextView tv1, tv2;
 
@@ -67,15 +74,24 @@ public class TwoColorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_two_color, container, false);
-        tv1 = (TextView) view.findViewById(R.id.textViewColor1);
-        tv1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        rl = (LinearLayout) view.findViewById(R.id.onColorLayout);
+        rl.setBackgroundColor(pColor1);
 
+        picker = (ColorPicker) view.findViewById(R.id.picker);
+        svBar = (SVBar) view.findViewById(R.id.svbar);
+        opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
+        picker.addSVBar(svBar);
+        picker.addOpacityBar(opacityBar);
+        picker.setShowOldCenterColor(false);
+        picker.setColor(pColor1);
+        picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+            @Override
+            public void onColorChanged(int color) {
+                pColor1 = color;
+                if (mListener != null) mListener.twoColorChanged(pId, pColor1, pColor2);
+                rl.setBackgroundColor(pColor1);
             }
         });
-        tv2 = (TextView) view.findViewById(R.id.textViewColor2);
-
         // Inflate the layout for this fragment
         return view;
     }

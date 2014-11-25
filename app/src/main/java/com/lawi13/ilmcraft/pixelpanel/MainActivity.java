@@ -27,6 +27,7 @@ public class MainActivity extends Activity
     public static final String KEY_PREF_pColor1 = "pColor1";
 
     public static final String MyPREFERENCES = "MyPrefs";
+    public static int navBarColor = 0xcc000050;
 
     private int actGroup = 0;
     private int actChild = 0;
@@ -74,6 +75,8 @@ public class MainActivity extends Activity
         if (sharedpreferences.contains(KEY_PREF_pColor1)) {
             pColor1 = sharedpreferences.getInt(KEY_PREF_pColor1, 0);
         }
+        navBarColor = pColor1;
+        navBarColor = Utils.AToARGB(navBarColor, 0x33);
         onNavigationDrawerItemSelected(0, 0);
     }
 
@@ -378,6 +381,8 @@ public class MainActivity extends Activity
     @Override
     public void onColor1Change(int color1) {
         pColor1 = color1;
+        navBarColor = color1;
+        navBarColor = Utils.AToARGB(navBarColor, 0x33);
         showColor();
         //update color1
         Editor editor = sharedpreferences.edit();

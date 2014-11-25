@@ -363,6 +363,7 @@ public class SaturationBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeValueBarColor(mColor);
                             mPicker.changeOpacityBarColor(mColor);
                         }
@@ -373,6 +374,7 @@ public class SaturationBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeValueBarColor(mColor);
                             mPicker.changeOpacityBarColor(mColor);
                         }
@@ -383,6 +385,7 @@ public class SaturationBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeValueBarColor(mColor);
                             mPicker.changeOpacityBarColor(mColor);
                         }
@@ -448,6 +451,7 @@ public class SaturationBar extends View {
         mBarPointerPaint.setColor(mColor);
         if (mPicker != null) {
             mPicker.setNewCenterColor(mColor);
+            mPicker.ColorChangedEvent();
             mPicker.changeValueBarColor(mColor);
             mPicker.changeOpacityBarColor(mColor);
         }

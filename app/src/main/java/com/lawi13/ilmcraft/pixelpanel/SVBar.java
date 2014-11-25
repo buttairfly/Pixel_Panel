@@ -344,6 +344,7 @@ public class SVBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeOpacityBarColor(mColor);
                         }
                         invalidate();
@@ -353,6 +354,7 @@ public class SVBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeOpacityBarColor(mColor);
                         }
                         invalidate();
@@ -362,6 +364,7 @@ public class SVBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeOpacityBarColor(mColor);
                         }
                         invalidate();
@@ -389,6 +392,7 @@ public class SVBar extends View {
         // wheel
         if (mPicker != null) {
             mPicker.setNewCenterColor(mColor);
+            mPicker.ColorChangedEvent();
             mPicker.changeOpacityBarColor(mColor);
         }
         invalidate();
@@ -408,6 +412,7 @@ public class SVBar extends View {
         // wheel
         if (mPicker != null) {
             mPicker.setNewCenterColor(mColor);
+            mPicker.ColorChangedEvent();
             mPicker.changeOpacityBarColor(mColor);
         }
         invalidate();

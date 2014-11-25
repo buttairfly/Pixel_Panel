@@ -558,7 +558,19 @@ public class ColorPicker extends View {
             mValueBar.setValue(mHSV[2]);
         }
         setNewCenterColor(color);
+        ColorChangedEvent();
     }
+
+    /**
+     * Puts an ColorChanged Event on the listener.
+     */
+    public void ColorChangedEvent() {
+        if (onColorChangedListener != null && mCenterNewColor != oldChangedListenerColor) {
+            onColorChangedListener.onColorChanged(mCenterNewColor);
+            oldChangedListenerColor = mCenterNewColor;
+        }
+    }
+
 
     /**
      * Convert a color to an angle.
@@ -620,8 +632,8 @@ public class ColorPicker extends View {
                 if (mUserIsMovingPointer) {
                     mAngle = (float) Math.atan2(y - mSlopY, x - mSlopX);
                     mPointerColor.setColor(calculateColor(mAngle));
-
-                    setNewCenterColor(mCenterNewColor = calculateColor(mAngle));
+                    mCenterNewColor = calculateColor(mAngle);
+                    setNewCenterColor(mColor);
 
                     if (mOpacityBar != null) {
                         mOpacityBar.setColor(mColor);
@@ -639,6 +651,12 @@ public class ColorPicker extends View {
                         mSVbar.setColor(mColor);
                     }
 
+                    if (onColorChangedListener != null && getColor() != oldChangedListenerColor) {
+                        onColorChangedListener.onColorChanged(getColor());
+                        oldChangedListenerColor = getColor();
+                    }
+
+                    ColorChangedEvent();
                     invalidate();
                 }
                 // If user did not press pointer or center, report event not handled
@@ -730,10 +748,6 @@ public class ColorPicker extends View {
         if (mCenterOldColor == 0) {
             mCenterOldColor = color;
             mCenterOldPaint.setColor(color);
-        }
-        if (onColorChangedListener != null && color != oldChangedListenerColor) {
-            onColorChangedListener.onColorChanged(color);
-            oldChangedListenerColor = color;
         }
         invalidate();
     }
@@ -863,6 +877,7 @@ public class ColorPicker extends View {
         int currentColor = calculateColor(mAngle);
         mPointerColor.setColor(currentColor);
         setNewCenterColor(currentColor);
+        ColorChangedEvent();
     }
 
     public void setTouchAnywhereOnColorWheelEnabled(boolean TouchAnywhereOnColorWheelEnabled) {

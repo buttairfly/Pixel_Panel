@@ -20,8 +20,9 @@ public class OneColorFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_COLOR1 = "color1";
 
-    private int color1;
+    private int pColor1;
     private ColorPicker picker;
+    //private SVBar svBar;
     private SaturationBar saturationBar;
     private ValueBar valueBar;
     private OpacityBar opacityBar;
@@ -53,7 +54,7 @@ public class OneColorFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            color1 = getArguments().getInt(ARG_COLOR1);
+            pColor1 = getArguments().getInt(ARG_COLOR1);
         }
     }
 
@@ -63,37 +64,25 @@ public class OneColorFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_one_color, container, false);
         rl = (LinearLayout) view.findViewById(R.id.onColorLayout);
-        rl.setBackgroundColor(color1);
+        rl.setBackgroundColor(pColor1);
 
         picker = (ColorPicker) view.findViewById(R.id.picker);
-        saturationBar = (SaturationBar) view.findViewById(R.id.saturationbar);
+        //svBar = (SVBar) view.findViewById(R.id.svbar);
         valueBar = (ValueBar) view.findViewById(R.id.valuebar);
+        saturationBar = (SaturationBar) view.findViewById(R.id.saturationbar);
         opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
-        picker.addSaturationBar(saturationBar);
-        picker.addValueBar(valueBar);
+        //picker.addSVBar(svBar);
         picker.addOpacityBar(opacityBar);
         picker.setShowOldCenterColor(false);
-        picker.setColor(color1);
-        picker.setOnColorSelectedListener(new ColorPicker.OnColorSelectedListener() {
-            @Override
-            public void onColorSelected(int color) {
-                color1 = color;
-                if (mListener != null) mListener.onColor1Change(color1);
-                rl.setBackgroundColor(color1);
-            }
-        });
-        /*
+        picker.setColor(pColor1);
         picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
             @Override
             public void onColorChanged(int color) {
-                if (color1 != picker.getColor()){
-                    if (mListener != null) mListener.onColor1Change(picker.getColor());
-                    rl.setBackgroundColor(color);
-                    color1 = picker.getColor();
-                    SystemClock.sleep(20);
-                }
+                pColor1 = color;
+                if (mListener != null) mListener.onColor1Change(pColor1);
+                rl.setBackgroundColor(pColor1);
             }
-        });*/
+        });
         return view;
     }
 

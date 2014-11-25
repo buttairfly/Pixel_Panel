@@ -362,6 +362,7 @@ public class ValueBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeOpacityBarColor(mColor);
                         }
                         invalidate();
@@ -371,6 +372,7 @@ public class ValueBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeOpacityBarColor(mColor);
                         }
                         invalidate();
@@ -380,6 +382,7 @@ public class ValueBar extends View {
                         mBarPointerPaint.setColor(mColor);
                         if (mPicker != null) {
                             mPicker.setNewCenterColor(mColor);
+                            mPicker.ColorChangedEvent();
                             mPicker.changeOpacityBarColor(mColor);
                         }
                         invalidate();
@@ -443,6 +446,7 @@ public class ValueBar extends View {
         if (mPicker != null) {
             mPicker.setNewCenterColor(mColor);
             mPicker.changeOpacityBarColor(mColor);
+            mPicker.ColorChangedEvent();
         }
         invalidate();
     }
