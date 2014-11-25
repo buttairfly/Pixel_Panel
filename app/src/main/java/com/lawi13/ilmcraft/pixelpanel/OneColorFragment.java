@@ -3,14 +3,10 @@ package com.lawi13.ilmcraft.pixelpanel;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
-//import com.larswerkman.holocolorpicker.*;
+import android.widget.LinearLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,19 +16,20 @@ import android.widget.TextView;
  * Use the {@link OneColorFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OneColorFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class OneColorFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_RED = "color1";
+    private static final String ARG_COLOR1 = "color1";
 
     private int color1;
-    // private ColorPicker picker;
-    private SeekBar SeekBarRed, SeekBarGreen, SeekBarBlue;
-    private TextView EditTextRed, EditTextGreen, EditTextBlue;
+    private ColorPicker picker;
+    private SaturationBar saturationBar;
+    private ValueBar valueBar;
+    private OpacityBar opacityBar;
+    private LinearLayout rl;
 
     final static String TAG = "OneColorFragment";
 
     private OnFragmentInteractionListener mListener;
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -43,7 +40,7 @@ public class OneColorFragment extends Fragment implements SeekBar.OnSeekBarChang
     public static OneColorFragment newInstance(int color1) {
         OneColorFragment fragment = new OneColorFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_RED, color1);
+        args.putInt(ARG_COLOR1, color1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +53,7 @@ public class OneColorFragment extends Fragment implements SeekBar.OnSeekBarChang
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            color1 = getArguments().getInt(ARG_RED);
+            color1 = getArguments().getInt(ARG_COLOR1);
         }
     }
 
@@ -65,66 +62,40 @@ public class OneColorFragment extends Fragment implements SeekBar.OnSeekBarChang
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_one_color, container, false);
+        rl = (LinearLayout) view.findViewById(R.id.onColorLayout);
+        rl.setBackgroundColor(color1);
 
-        /*
         picker = (ColorPicker) view.findViewById(R.id.picker);
-        SVBar svBar = (SVBar) view.findViewById(R.id.svbar);
-        OpacityBar opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
-
-        picker.addSVBar(svBar);
+        saturationBar = (SaturationBar) view.findViewById(R.id.saturationbar);
+        valueBar = (ValueBar) view.findViewById(R.id.valuebar);
+        opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
+        picker.addSaturationBar(saturationBar);
+        picker.addValueBar(valueBar);
         picker.addOpacityBar(opacityBar);
-
+        picker.setShowOldCenterColor(false);
         picker.setColor(color1);
-*/
-        SeekBarRed = (SeekBar) view.findViewById(R.id.seekBarRed);
-        SeekBarRed.setOnSeekBarChangeListener(this);
-        SeekBarGreen = (SeekBar) view.findViewById(R.id.seekBarGreen);
-        SeekBarGreen.setOnSeekBarChangeListener(this);
-        SeekBarBlue = (SeekBar) view.findViewById(R.id.seekBarBlue);
-        SeekBarBlue.setOnSeekBarChangeListener(this);
-
-        EditTextRed = (TextView) view.findViewById(R.id.textViewRedProgress);
-        EditTextGreen = (TextView) view.findViewById(R.id.textViewGreenProgress);
-        EditTextBlue = (TextView) view.findViewById(R.id.textViewBlueProgress);
-
-        SeekBarRed.setProgress(Utils.ARGBtoR(color1));
-        SeekBarGreen.setProgress(Utils.ARGBtoG(color1));
-        SeekBarBlue.setProgress(Utils.ARGBtoB(color1));
-
+        picker.setOnColorSelectedListener(new ColorPicker.OnColorSelectedListener() {
+            @Override
+            public void onColorSelected(int color) {
+                color1 = color;
+                if (mListener != null) mListener.onColor1Change(color1);
+                rl.setBackgroundColor(color1);
+            }
+        });
+        /*
+        picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+            @Override
+            public void onColorChanged(int color) {
+                if (color1 != picker.getColor()){
+                    if (mListener != null) mListener.onColor1Change(picker.getColor());
+                    rl.setBackgroundColor(color);
+                    color1 = picker.getColor();
+                    SystemClock.sleep(20);
+                }
+            }
+        });*/
         return view;
     }
-
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        Log.v(TAG, "SeekBar " + seekBar.getId() + " string: " + seekBar.toString() + "i: " + i);
-        Integer val = i;
-        if (seekBar.getId() == SeekBarRed.getId()) {
-            color1 = Utils.RToARGB(color1, i);
-            EditTextRed.setText(val.toString());
-        }
-        if (seekBar.getId() == SeekBarGreen.getId()) {
-            color1 = Utils.GToARGB(color1, i);
-            EditTextGreen.setText(val.toString());
-        }
-        if (seekBar.getId() == SeekBarBlue.getId()) {
-            color1 = Utils.BToARGB(color1, i);
-            EditTextBlue.setText(val.toString());
-        }
-        if (mListener != null) mListener.onColor1Change(color1);
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
-    }
-
 
     @Override
     public void onAttach(Activity activity) {

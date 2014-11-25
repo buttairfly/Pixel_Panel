@@ -35,7 +35,6 @@ public class ExpandabelListAdoptor extends BaseExpandableListAdapter {
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
         return childPosition;
     }
 
@@ -67,19 +66,16 @@ public class ExpandabelListAdoptor extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        // TODO Auto-generated method stub
         return this._listDataHeader.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        // TODO Auto-generated method stub
         return this._listDataHeader.size();
     }
 
     @Override
     public long getGroupId(int groupPosition) {
-        // TODO Auto-generated method stub
         return groupPosition;
     }
 
@@ -103,13 +99,11 @@ public class ExpandabelListAdoptor extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
         return true;
     }
 
