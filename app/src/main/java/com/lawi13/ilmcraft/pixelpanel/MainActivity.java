@@ -30,7 +30,7 @@ public class MainActivity extends Activity
     public static int navBarColor = 0xcc000050;
 
     private int actGroup = 0;
-    private int actChild = 0;
+    //private int actChild = 0;
 
     private int pColor1 = 0;
     private int pMBrightness = 255;
@@ -83,13 +83,14 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int group, int child) {
         actGroup = group;
-        actChild = child;
+        //actChild = child;
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         onSectionAttached(group, child);
         Log.v(TAG, "change to Group: " + group + ", Child: " + child + ", Title: " + mTitle);
         switch (group) {
             case 0:
+                //Draw
                 switch (child) {
                     case 0:
                         fragmentManager.beginTransaction()
@@ -102,7 +103,9 @@ public class MainActivity extends Activity
                         break;
                 }
                 break;
+
             case 1:
+                //Animation
                 switch (child) {
                     case 0: {
                         /* Pulse Color
@@ -180,6 +183,7 @@ public class MainActivity extends Activity
                         break;
                 }
                 break;
+            //Games
             case 2:
                 switch (child) {
                     default:
@@ -187,15 +191,18 @@ public class MainActivity extends Activity
                         break;
                 }
                 break;
+            //Settings
             case 3:
                 switch (child) {
                     case 0:
+                        //connectivity
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame,
                                         Connectivity.newInstance(ipAddress))
                                 .commit();
                         break;
                     case 1:
+                        //display
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame,
                                         Display.newInstance(pMBrightness, pFPS))
@@ -206,6 +213,7 @@ public class MainActivity extends Activity
                         break;
                 }
                 break;
+            //should not happen:
             default:
                 loadDefaultFragment("Dummy: " + mTitle);
                 break;
