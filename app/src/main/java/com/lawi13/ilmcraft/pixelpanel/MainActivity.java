@@ -33,6 +33,7 @@ public class MainActivity extends Activity
     //private int actChild = 0;
 
     private int pColor1 = 0;
+    private int pColor2 = 0;
     private int pMBrightness = 255;
     private int pFPS = 60;
     private String ipAddress = "";
@@ -93,6 +94,8 @@ public class MainActivity extends Activity
                 //Draw
                 switch (child) {
                     case 0:
+                        /* Draw Color
+                         */
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame,
                                         OneColorFragment.newInstance(pColor1))
@@ -117,63 +120,142 @@ public class MainActivity extends Activity
                         break;
                     }
                     case 1: {
-                        /* Fade Dir
-                         * paramSize: 5
-                         * [0]: diff
-                         * [1]: direction //TODO: implement
-                         * [2]: red
-                         * [3]: green
-                         * [4]: blue
+                        /* Fade Screen
+                         * ani 0x03
+                         * paramSize: 4
+                         * [0]: skipFrame
+                         * [1]: delta
+                         * [2]: colorDimmer
+                         * [3]: saturation
                          */
-                        byte diff = 4;
-                        byte dir = 0;
-                        byte[] message = {diff, dir, (byte) 0x00, (byte) 0xff, 0x00};
+                        byte skipFrame = 0;
+                        byte delta = 4;
+                        byte dimmer = (byte) 0xff;
+                        byte saturation = 0x00;
+                        byte[] message = {skipFrame, delta, dimmer, saturation};
                         byte ctl = (byte) 0x80;
-                        byte spCmd = (byte) 0x03;
-                        byte spSubCmd = (byte) 0x02;
+                        byte spCmd = (byte) 0x03;//set ani
+                        byte spSubCmd = (byte) 0x03; //fadeScreen
                         udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
-                        loadDefaultFragment(mTitle + " - Left - Started");
+                        loadDefaultFragment(mTitle + " - Started");
+                        break;
+                    }
+                    case 2: {
+                        /* Fade Direction
+                         * ani 0x02
+                         * paramSize: 5
+                         * [0]: skipFrame
+                         * [1]: delta
+                         * [2]: direction
+                         * [3]: colorDimmer
+                         * [4]: saturation
+                         */
+                        byte skipFrame = 0;
+                        byte delta = 4;
+                        byte dir = 3;
+                        byte dimmer = (byte) 0xff;
+                        byte saturation = 0x00;
+                        byte[] message = {skipFrame, delta, dir, dimmer, saturation};
+                        byte ctl = (byte) 0x80;
+                        byte spCmd = (byte) 0x03;//set ani
+                        byte spSubCmd = (byte) 0x02;//fade dir
+                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                        loadDefaultFragment(mTitle + " - dirRightBot - Started");
+                        break;
+                    }
+                    case 3: {
+                        /* Rotor
+                         * ani 0x05
+                         * paramSize: 11
+                         * [ 0]: frameSkip
+                         * [ 1]: antiAliasing//TODO implement
+                         * [ 2]: width
+                         * [ 3]: rotate_x//TODO implement
+                         * [ 4]: rotate_y//TODO implement
+                         * [ 5]: rotorRed
+                         * [ 6]: rotorGreen
+                         * [ 7]: rotorBlue
+                         * [ 8]: backgroundRed
+                         * [ 9]: backgroundGreen
+                         * [10]: backgroundBlue
+                         */
+                        byte[] message = {(byte) 0x00, 0x00, 0x01, 0x00, 0x00,
+                                (byte) Utils.ARGBtoR(pColor1),
+                                (byte) Utils.ARGBtoG(pColor1),
+                                (byte) Utils.ARGBtoB(pColor1),
+                                (byte) Utils.ARGBtoR(pColor2),
+                                (byte) Utils.ARGBtoG(pColor2),
+                                (byte) Utils.ARGBtoB(pColor2)};
+                        byte ctl = (byte) 0x80;
+                        byte spCmd = (byte) 0x03;//set ani
+                        byte spSubCmd = (byte) 0x05;//rotor
+                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                        loadDefaultFragment(mTitle + " - Started");
                         break;
                     }
                     case 4: {
-                        /* Rotor
-                         * paramSize: 7
-                         * [0]: p_x1
-                         * [1]: p_y1
-                         * [2]: p_x2
-                         * [3]:	p_y2
-                         * [4]: red
-                         * [5]:	green
-                         * [6]:	blue
+                        /* Drops
+                         * ani 0x06
+                         * paramSize: 9
+                         * [0]: frameSkip
+                         * [1]: antiAliasing//TODO implement
+                         * [2]: width
+                         * [3]: dropRed
+                         * [4]: dropGreen
+                         * [5]: dropBlue
+                         * [6]: backgroundRed
+                         * [7]: backgroundGreen
+                         * [8]: backgroundBlue
                          */
-                        byte[] message = {(byte) 0x00, 0x00, 0x00, 0x00,
+                        byte[] message = {(byte) 0x00, 0x00, 0x01,
                                 (byte) Utils.ARGBtoR(pColor1),
                                 (byte) Utils.ARGBtoG(pColor1),
-                                (byte) Utils.ARGBtoB(pColor1)};
+                                (byte) Utils.ARGBtoB(pColor1),
+                                (byte) Utils.ARGBtoR(pColor2),
+                                (byte) Utils.ARGBtoG(pColor2),
+                                (byte) Utils.ARGBtoB(pColor2)};
                         byte ctl = (byte) 0x80;
-                        byte spCmd = (byte) 0x03;
-                        byte spSubCmd = (byte) 0x05;
+                        byte spCmd = (byte) 0x03;//set ani
+                        byte spSubCmd = (byte) 0x06;//waterdrops
                         udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
                         loadDefaultFragment(mTitle + " - Started");
                         break;
                     }
                     case 5: {
-                        /* Drops
-                         * paramSize: 6
-                         * [0]: x
-                         * [1]: y
-                         * [2]: radius
-                         * [3]: red
-                         * [4]: green
-                         * [5]: blue
+                        /* Invader
+                         * ani 0x01
+                         * paramSize : 3
+                         * [0]: skipFrame
+                         * [1]: colorDimmer
+                         * [2]: saturation
                          */
-                        byte[] message = {(byte) 0x04, 0x02, 0x00,
+                        byte[] message = {(byte) 0x00, (byte) 0xff, 0x00};
+                        byte ctl = (byte) 0x80;
+                        byte spCmd = (byte) 0x03;//set ani
+                        byte spSubCmd = (byte) 0x01;//invader
+                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                        loadDefaultFragment(mTitle + " - Started");
+                        break;
+                    }
+                    case 6: {
+                        /* Fading Pixels
+                         * ani 0x07
+                         * paramSize: 7
+                         * [0]: frameSkip
+                         * [1]: targetPixHigh
+                         * [2]: targetPixLow
+                         * [3]: fadeSpeed
+                         * [4]: pixRed
+                         * [5]: pixGreen
+                         * [6]: pixBlue
+                         */
+                        byte[] message = {(byte) 0x00, 0x00, (byte) 100, 0x02,
                                 (byte) Utils.ARGBtoR(pColor1),
                                 (byte) Utils.ARGBtoG(pColor1),
                                 (byte) Utils.ARGBtoB(pColor1)};
                         byte ctl = (byte) 0x80;
-                        byte spCmd = (byte) 0x03;
-                        byte spSubCmd = (byte) 0x06;
+                        byte spCmd = (byte) 0x03;//set ani
+                        byte spSubCmd = (byte) 0x07;//fading Pixels
                         udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
                         loadDefaultFragment(mTitle + " - Started");
                         break;
@@ -222,7 +304,7 @@ public class MainActivity extends Activity
 
     private void loadDefaultFragment(CharSequence s) {
         getFragmentManager().beginTransaction().replace(R.id.content_frame,
-                DefaultFragment.newInstance(s))
+                DefaultFragment.newInstance(s, pColor1))
                 .commit();
     }
 
@@ -317,8 +399,15 @@ public class MainActivity extends Activity
                 break;
             }
             case 1: {
-                //animation
-                byte[] message = {(byte) 0xff, 0x00,
+                /* ani 0x04
+                 * paramSize: 5
+                 * [0]: skipFrame
+                 * [1]: delta//should be 1
+                 * [2]: red
+                 * [3]: green
+                 * [4]: blue
+                 */
+                byte[] message = {(byte) 0x00, 0x01,
                         (byte) Utils.ARGBtoR(pColor1),
                         (byte) Utils.ARGBtoG(pColor1),
                         (byte) Utils.ARGBtoB(pColor1)};

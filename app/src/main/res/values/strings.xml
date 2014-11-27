@@ -26,12 +26,13 @@
     </string-array>
     <string-array name="Animation">
         <item>Pulse Color</item>
-        <item>Fade Dir</item>
-        <item>Fade Pixels</item>
-        <item>Matrix</item>
+        <item>Fade Screen</item>
+        <item>Fade Direction</item>
         <item>Rotor</item>
         <item>Drops</item>
         <item>Invader</item>
+        <item>Fade Pixels</item>
+        <item>Falling Pixels</item>
     </string-array>
     <string-array name="Games">
         <item>Snake</item>
@@ -50,5 +51,8 @@
     <string name="color1">first Color</string>
     <string name="color2">second Color</string>
     <string name="btnColor1">Color one</string>
+    <string name="textPing">Ping: unendelich</string>
+    <string name="btnPing">Ping</string>
+    <string name="btnReboot">Reboot</string>
 
 </resources>

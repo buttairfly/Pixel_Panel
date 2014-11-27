@@ -16,8 +16,10 @@ import android.widget.TextView;
  */
 public class DefaultFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private CharSequence mParam1;
+    private static final String ARG_SEQUENCE = "charSeq";
+    private static final String ARG_COLOR = "color";
+    private CharSequence charSeq;
+    private int pColor;
 
     private TextView tv;
 
@@ -25,13 +27,14 @@ public class DefaultFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param charSeq displayed Char Sequence.
      * @return A new instance of fragment DefaultFragment.
      */
-    public static DefaultFragment newInstance(CharSequence param1) {
+    public static DefaultFragment newInstance(CharSequence charSeq, int color) {
         DefaultFragment fragment = new DefaultFragment();
         Bundle args = new Bundle();
-        args.putCharSequence(ARG_PARAM1, param1);
+        args.putCharSequence(ARG_SEQUENCE, charSeq);
+        args.putInt(ARG_COLOR, color);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +47,8 @@ public class DefaultFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getCharSequence(ARG_PARAM1);
+            charSeq = getArguments().getCharSequence(ARG_SEQUENCE);
+            pColor = getArguments().getInt(ARG_COLOR);
         }
     }
 
@@ -54,7 +58,8 @@ public class DefaultFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_default, container, false);
         tv = (TextView) view.findViewById(R.id.TextViewDefault);
-        tv.setText(mParam1);
+        tv.setText(charSeq);
+        tv.setBackgroundColor(pColor);
         return view;
     }
 
