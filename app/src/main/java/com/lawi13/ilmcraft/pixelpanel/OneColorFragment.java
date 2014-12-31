@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.SaturationBar;
+import com.larswerkman.holocolorpicker.ValueBar;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -25,7 +29,7 @@ public class OneColorFragment extends Fragment {
     //private SVBar svBar;
     private SaturationBar saturationBar;
     private ValueBar valueBar;
-    private OpacityBar opacityBar;
+    //private OpacityBar opacityBar;
     private LinearLayout rl;
 
     final static String TAG = "OneColorFragment";
@@ -63,16 +67,18 @@ public class OneColorFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_one_color, container, false);
-        rl = (LinearLayout) view.findViewById(R.id.onColorLayout);
+        rl = (LinearLayout) view.findViewById(R.id.oneColorLayout);
         rl.setBackgroundColor(pColor1);
 
         picker = (ColorPicker) view.findViewById(R.id.picker);
         //svBar = (SVBar) view.findViewById(R.id.svbar);
         valueBar = (ValueBar) view.findViewById(R.id.valuebar);
         saturationBar = (SaturationBar) view.findViewById(R.id.saturationbar);
-        opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
+        //opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
         //picker.addSVBar(svBar);
-        picker.addOpacityBar(opacityBar);
+        picker.addValueBar(valueBar);
+        picker.addSaturationBar(saturationBar);
+        //picker.addOpacityBar(opacityBar);
         picker.setShowOldCenterColor(false);
         picker.setColor(pColor1);
         picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
@@ -116,5 +122,4 @@ public class OneColorFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         public void onColor1Change(int color1);
     }
-
 }

@@ -2,76 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lawi13.ilmcraft.pixelpanel.TwoColorFragment">
-
-    <LinearLayout
-        android:id="@+id/onColorLayout"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center">
+    tools:context="com.lawi13.ilmcraft.pixelpanel.TwoColorFragment"
+    android:id="@+id/twoColor">
 
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:background="#33000000">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
-
-
-                <Button
-                    android:layout_width="170dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/color2"
-                    android:id="@+id/btnCol2"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
-
-                <Button
-                    android:layout_width="170dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/color1"
-                    android:id="@+id/btnCol1"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-
-            </RelativeLayout>
-
-            <com.lawi13.ilmcraft.pixelpanel.ColorPicker
-                android:id="@+id/picker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center_horizontal" />
-
-            <com.lawi13.ilmcraft.pixelpanel.SVBar
-                android:id="@+id/svbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center_horizontal" />
-
-            <com.lawi13.ilmcraft.pixelpanel.OpacityBar
-                android:id="@+id/opacitybar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_gravity="center_horizontal" />
-
-
-        </LinearLayout>
-
-    </LinearLayout>
 </FrameLayout>

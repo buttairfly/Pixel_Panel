@@ -8,12 +8,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -30,14 +30,19 @@ public class MainActivity extends Activity
     public static int navBarColor = 0xcc000050;
 
     private int actGroup = 0;
-    //private int actChild = 0;
+    private int actChild = 0;
 
     private int pColor1 = 0;
     private int pColor2 = 0;
     private int pMBrightness = 255;
     private int pFPS = 60;
     private String ipAddress = "";
+
+
     private UDP_Client udp;
+
+    private FragmentTabHost mTabHost;
+
     final static String TAG = "MainActivity";
 
     /**
@@ -58,7 +63,17 @@ public class MainActivity extends Activity
         PACKAGE_NAME = getApplicationContext().getPackageName();
         setContentView(R.layout.activity_main);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+/*
+        mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        mTabHost.setup(this, getSupportFragmentManager(),R.id.realtabcontent);
 
+        mTabHost.addTab(mTabHost.newTabSpec("Color1").setIndicator("Color1"),
+                OneColorFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec("Color2").setIndicator("Color2"),
+                OneColorFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec("Menu").setIndicator("Menu"),
+                Display.class, null);
+*/
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -79,20 +94,22 @@ public class MainActivity extends Activity
         navBarColor = pColor1;
         navBarColor = Utils.AToARGB(navBarColor, 0x33);
         onNavigationDrawerItemSelected(0, 0);
+        //send frame to panel
+        showColor();
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int group, int child) {
         actGroup = group;
-        //actChild = child;
+        actChild = child;
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         onSectionAttached(group, child);
-        Log.v(TAG, "change to Group: " + group + ", Child: " + child + ", Title: " + mTitle);
-        switch (group) {
+        Log.v(TAG, "change to Group: " + actGroup + ", Child: " + actChild + ", Title: " + mTitle);
+        switch (actGroup) {
             case 0:
                 //Draw
-                switch (child) {
+                switch (actChild) {
                     case 0:
                         /* Draw Color
                          */
@@ -100,6 +117,7 @@ public class MainActivity extends Activity
                                 .replace(R.id.content_frame,
                                         OneColorFragment.newInstance(pColor1))
                                 .commit();
+                        showColor();
                         break;
                     default:
                         loadDefaultFragment("Dummy: " + mTitle);
@@ -117,6 +135,7 @@ public class MainActivity extends Activity
                                 .replace(R.id.content_frame,
                                         OneColorFragment.newInstance(pColor1))
                                 .commit();
+                        showColor();
                         break;
                     }
                     case 1: {
@@ -153,8 +172,8 @@ public class MainActivity extends Activity
                         byte skipFrame = 0;
                         byte delta = 4;
                         byte dir = 3;
-                        byte dimmer = (byte) 0xff;
-                        byte saturation = 0x00;
+                        byte dimmer = (byte) 0x80;
+                        byte saturation = (byte) 0x10;
                         byte[] message = {skipFrame, delta, dir, dimmer, saturation};
                         byte ctl = (byte) 0x80;
                         byte spCmd = (byte) 0x03;//set ani
@@ -164,61 +183,19 @@ public class MainActivity extends Activity
                         break;
                     }
                     case 3: {
-                        /* Rotor
-                         * ani 0x05
-                         * paramSize: 11
-                         * [ 0]: frameSkip
-                         * [ 1]: antiAliasing//TODO implement
-                         * [ 2]: width
-                         * [ 3]: rotate_x//TODO implement
-                         * [ 4]: rotate_y//TODO implement
-                         * [ 5]: rotorRed
-                         * [ 6]: rotorGreen
-                         * [ 7]: rotorBlue
-                         * [ 8]: backgroundRed
-                         * [ 9]: backgroundGreen
-                         * [10]: backgroundBlue
-                         */
-                        byte[] message = {(byte) 0x00, 0x00, 0x01, 0x00, 0x00,
-                                (byte) Utils.ARGBtoR(pColor1),
-                                (byte) Utils.ARGBtoG(pColor1),
-                                (byte) Utils.ARGBtoB(pColor1),
-                                (byte) Utils.ARGBtoR(pColor2),
-                                (byte) Utils.ARGBtoG(pColor2),
-                                (byte) Utils.ARGBtoB(pColor2)};
-                        byte ctl = (byte) 0x80;
-                        byte spCmd = (byte) 0x03;//set ani
-                        byte spSubCmd = (byte) 0x05;//rotor
-                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
-                        loadDefaultFragment(mTitle + " - Started");
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        OneColorFragment.newInstance(pColor1))
+                                .commit();
+                        rotor();
                         break;
                     }
                     case 4: {
-                        /* Drops
-                         * ani 0x06
-                         * paramSize: 9
-                         * [0]: frameSkip
-                         * [1]: antiAliasing//TODO implement
-                         * [2]: width
-                         * [3]: dropRed
-                         * [4]: dropGreen
-                         * [5]: dropBlue
-                         * [6]: backgroundRed
-                         * [7]: backgroundGreen
-                         * [8]: backgroundBlue
-                         */
-                        byte[] message = {(byte) 0x00, 0x00, 0x01,
-                                (byte) Utils.ARGBtoR(pColor1),
-                                (byte) Utils.ARGBtoG(pColor1),
-                                (byte) Utils.ARGBtoB(pColor1),
-                                (byte) Utils.ARGBtoR(pColor2),
-                                (byte) Utils.ARGBtoG(pColor2),
-                                (byte) Utils.ARGBtoB(pColor2)};
-                        byte ctl = (byte) 0x80;
-                        byte spCmd = (byte) 0x03;//set ani
-                        byte spSubCmd = (byte) 0x06;//waterdrops
-                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
-                        loadDefaultFragment(mTitle + " - Started");
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        OneColorFragment.newInstance(pColor1))
+                                .commit();
+                        drops();
                         break;
                     }
                     case 5: {
@@ -229,7 +206,7 @@ public class MainActivity extends Activity
                          * [1]: colorDimmer
                          * [2]: saturation
                          */
-                        byte[] message = {(byte) 0x00, (byte) 0xff, 0x00};
+                        byte[] message = {(byte) 0x00, (byte) 0x90, (byte) 0x20};
                         byte ctl = (byte) 0x80;
                         byte spCmd = (byte) 0x03;//set ani
                         byte spSubCmd = (byte) 0x01;//invader
@@ -238,30 +215,23 @@ public class MainActivity extends Activity
                         break;
                     }
                     case 6: {
-                        /* Fading Pixels
-                         * ani 0x07
-                         * paramSize: 7
-                         * [0]: frameSkip
-                         * [1]: targetPixHigh
-                         * [2]: targetPixLow
-                         * [3]: fadeSpeed
-                         * [4]: pixRed
-                         * [5]: pixGreen
-                         * [6]: pixBlue
-                         */
-                        byte[] message = {(byte) 0x00, 0x00, (byte) 100, 0x02,
-                                (byte) Utils.ARGBtoR(pColor1),
-                                (byte) Utils.ARGBtoG(pColor1),
-                                (byte) Utils.ARGBtoB(pColor1)};
-                        byte ctl = (byte) 0x80;
-                        byte spCmd = (byte) 0x03;//set ani
-                        byte spSubCmd = (byte) 0x07;//fading Pixels
-                        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
-                        loadDefaultFragment(mTitle + " - Started");
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        OneColorFragment.newInstance(pColor1))
+                                .commit();
+                        fadingPixel();
+                        break;
+                    }
+                    case 7: {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame,
+                                        OneColorFragment.newInstance(pColor1))
+                                .commit();
+                        dirFallingPixel();
                         break;
                     }
                     default:
-                        loadDefaultFragment("Dummy: " + mTitle);
+                        loadDefaultFragment(mTitle + " - Started");
                         break;
                 }
                 break;
@@ -380,6 +350,108 @@ public class MainActivity extends Activity
             udp.terminate();
     }
 
+
+    private void rotor() {
+    /* Rotor
+     * ani 0x05
+     * paramSize: 11
+     * [ 0]: frameSkip
+     * [ 1]: antiAliasing//TODO implement
+     * [ 2]: width
+     * [ 3]: rotate_x//TODO implement
+     * [ 4]: rotate_y//TODO implement
+     * [ 5]: rotorRed
+     * [ 6]: rotorGreen
+     * [ 7]: rotorBlue
+     * [ 8]: backgroundRed
+     * [ 9]: backgroundGreen
+     * [10]: backgroundBlue
+     */
+        byte[] message = {(byte) 0x03, 0x00, 0x01, 0x00, 0x00,
+                (byte) Utils.ARGBtoR(pColor1),
+                (byte) Utils.ARGBtoG(pColor1),
+                (byte) Utils.ARGBtoB(pColor1),
+                (byte) Utils.ARGBtoR(pColor2),
+                (byte) Utils.ARGBtoG(pColor2),
+                (byte) Utils.ARGBtoB(pColor2)};
+        byte ctl = (byte) 0x80;
+        byte spCmd = (byte) 0x03;//set ani
+        byte spSubCmd = (byte) 0x05;//rotor
+        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+    }
+
+    private void drops() {
+    /* Drops
+     * ani 0x06
+     * paramSize: 9
+     * [0]: frameSkip
+     * [1]: antiAliasing//TODO implement
+     * [2]: width
+     * [3]: dropRed
+     * [4]: dropGreen
+     * [5]: dropBlue
+     * [6]: backgroundRed
+     * [7]: backgroundGreen
+     * [8]: backgroundBlue
+        */
+        byte[] message = {(byte) 0x03, 0x00, 0x01,
+                (byte) Utils.ARGBtoR(pColor1),
+                (byte) Utils.ARGBtoG(pColor1),
+                (byte) Utils.ARGBtoB(pColor1),
+                (byte) Utils.ARGBtoR(pColor2),
+                (byte) Utils.ARGBtoG(pColor2),
+                (byte) Utils.ARGBtoB(pColor2)};
+        byte ctl = (byte) 0x80;
+        byte spCmd = (byte) 0x03;//set ani
+        byte spSubCmd = (byte) 0x06;//waterdrops
+        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+    }
+
+    private void fadingPixel() {
+    /* Fading Pixels
+     * ani 0x07
+     * paramSize: 7
+     * [0]: frameSkip
+     * [1]: targetPixHigh
+     * [2]: targetPixLow
+     * [3]: fadeSpeed
+     * [4]: pixRed
+     * [5]: pixGreen
+     * [6]: pixBlue
+     */
+        byte[] message = {(byte) 0x00, 0x00, (byte) 100, 0x02,
+                (byte) Utils.ARGBtoR(pColor1),
+                (byte) Utils.ARGBtoG(pColor1),
+                (byte) Utils.ARGBtoB(pColor1)};
+        byte ctl = (byte) 0x80;
+        byte spCmd = (byte) 0x03;//set ani
+        byte spSubCmd = (byte) 0x07;//fading Pixels
+        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+    }
+
+    private void dirFallingPixel() {
+    /* dir Falling Pixels
+     * ani 0x08
+    * paramSize: 8
+    * [0]: frameSkip
+    * [1]: targetPix
+    * [2]: length
+    * [3]: direction
+    * [4]: dropDiff
+    * [5]: pixRed
+    * [6]: pixGreen
+    * [7]: pixBlue
+    */
+        byte[] message = {(byte) 0x03, 10, 4, 0x02, 50,
+                (byte) Utils.ARGBtoR(pColor1),
+                (byte) Utils.ARGBtoG(pColor1),
+                (byte) Utils.ARGBtoB(pColor1)};
+        byte ctl = (byte) 0x80;
+        byte spCmd = (byte) 0x03;//set ani
+        byte spSubCmd = (byte) 0x08;//dir Falling Pixels
+        udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+    }
+
     private void showColor() {
         byte ctl = (byte) 0x80;
         byte spCmd;
@@ -470,6 +542,47 @@ public class MainActivity extends Activity
         editor.apply();
     }
 
+    @Override
+    public void onSystemCall(int id) {
+        byte ctl = (byte) 0x80;
+        byte spCmd;
+        byte spSubCmd;
+        switch (id) {
+            case 0x4A17: {
+                //halt
+                byte[] message = {};
+                spCmd = (byte) 0xFE;//SPCMD_SYSTEM_ADMIN
+                spSubCmd = (byte) 0x01;//halt
+                if (udp != null) {
+                    udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                }
+            }
+            break;
+            case 0x012eb007: {
+                //reboot
+                byte[] message = {};
+                spCmd = (byte) 0xFE;//SPCMD_SYSTEM_ADMIN
+                spSubCmd = (byte) 0x02;//reboot
+                if (udp != null) {
+                    udp.sendSpecialCmd(ctl, spCmd, spSubCmd, message);
+                }
+                break;
+            }
+            case 0xB1149: {
+                //ping
+                byte[] message = {};
+                ctl = 0x40;
+                byte cmd = (byte) 0x20;
+                if (udp != null) {
+                    udp.sendCmd(ctl, cmd, message);
+                    //  udp.getMessage();
+                }
+
+                break;
+            }
+        }
+    }
+
 
     /*
      * OneColorFragment Listener
@@ -480,7 +593,21 @@ public class MainActivity extends Activity
         pColor1 = color1;
         navBarColor = color1;
         navBarColor = Utils.AToARGB(navBarColor, 0x33);
-        showColor();
+        if (((actGroup == 0) && (actChild == 0)) || ((actGroup == 1) && (actChild == 0))) {
+            showColor();
+        }
+        if ((actGroup == 1) && (actChild == 3)) {
+            rotor();
+        }
+        if ((actGroup == 1) && (actChild == 4)) {
+            drops();
+        }
+        if ((actGroup == 1) && (actChild == 6)) {
+            fadingPixel();
+        }
+        if ((actGroup == 1) && (actChild == 7)) {
+            dirFallingPixel();
+        }
         //update color1
         Editor editor = sharedpreferences.edit();
         editor.putInt(KEY_PREF_pColor1, pColor1);

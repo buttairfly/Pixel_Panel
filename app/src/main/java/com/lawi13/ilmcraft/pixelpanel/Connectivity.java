@@ -24,8 +24,8 @@ public class Connectivity extends Fragment {
     private static final String ARG_IP = "IP";
     private String ipAddress;
 
-    private EditText EditTextIP;
-    private Button btnShutdownPi, btnResetIP;
+    private EditText EditTextIP, textViewPing;
+    private Button btnShutdownPi, btnResetIP, btnPing, btnReboot;
 
     final static String TAG = "Connectivity";
 
@@ -107,8 +107,31 @@ public class Connectivity extends Fragment {
             @Override
             public void onClick(View view) {
                 //shutdown
+                int sysCall = 0x4A17;
+                if (mListener != null) mListener.onSystemCall(sysCall);
             }
         });
+
+        btnReboot = (Button) view.findViewById(R.id.btnReboot);
+        btnReboot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //reboot
+                int sysCall = 0x012EB007;
+                if (mListener != null) mListener.onSystemCall(sysCall);
+            }
+        });
+
+        btnPing = (Button) view.findViewById(R.id.btnPing);
+        btnPing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //ping
+                int sysCall = 0xB1149;
+                if (mListener != null) mListener.onSystemCall(sysCall);
+            }
+        });
+
         EditTextIP.setText(ipAddress);
 
         return view;
@@ -143,6 +166,8 @@ public class Connectivity extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         public void onIpAddressChange(String ip);
+
+        public void onSystemCall(int id);
     }
 
 }

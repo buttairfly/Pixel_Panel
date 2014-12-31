@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.SaturationBar;
+import com.larswerkman.holocolorpicker.ValueBar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,8 +31,10 @@ public class TwoColorFragment extends Fragment {
     private int pColor2;
 
     private ColorPicker picker;
-    private SVBar svBar;
-    private OpacityBar opacityBar;
+    //private SVBar svBar;
+    private SaturationBar saturationBar;
+    private ValueBar valueBar;
+    //private OpacityBar opacityBar;
     private LinearLayout rl;
 
 
@@ -74,14 +79,18 @@ public class TwoColorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_two_color, container, false);
-        rl = (LinearLayout) view.findViewById(R.id.onColorLayout);
+        rl = (LinearLayout) view.findViewById(R.id.oneColorLayout);
         rl.setBackgroundColor(pColor1);
 
         picker = (ColorPicker) view.findViewById(R.id.picker);
-        svBar = (SVBar) view.findViewById(R.id.svbar);
-        opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
-        picker.addSVBar(svBar);
-        picker.addOpacityBar(opacityBar);
+        //svBar = (SVBar) view.findViewById(R.id.svbar);
+        valueBar = (ValueBar) view.findViewById(R.id.valuebar);
+        saturationBar = (SaturationBar) view.findViewById(R.id.saturationbar);
+        //opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
+        //picker.addSVBar(svBar);
+        picker.addValueBar(valueBar);
+        picker.addSaturationBar(saturationBar);
+        //picker.addOpacityBar(opacityBar);
         picker.setShowOldCenterColor(false);
         picker.setColor(pColor1);
         picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
